@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 11, 2022 at 10:41 AM
+-- Generation Time: Jan 18, 2022 at 03:19 PM
 -- Server version: 10.4.19-MariaDB
 -- PHP Version: 8.0.6
 
@@ -50,6 +50,13 @@ CREATE TABLE `restaurants` (
   `res_office_time` text NOT NULL COMMENT 'เวลาทำการ',
   `res_image` text NOT NULL COMMENT 'รูปภาพร้านอาหาร'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `restaurants`
+--
+
+INSERT INTO `restaurants` (`res_id`, `res_name`, `res_short_desc`, `res_full_desc`, `res_url`, `res_office_time`, `res_image`) VALUES
+(3, 'Restaurant 1', '1', '', 'https://www.youtube.com/', 'Monday', '61e6cbdae16ea.jpg');
 
 -- --------------------------------------------------------
 
@@ -110,13 +117,13 @@ ALTER TABLE `comments`
 -- AUTO_INCREMENT for table `restaurants`
 --
 ALTER TABLE `restaurants`
-  MODIFY `res_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'รหัสร้านอาหาร';
+  MODIFY `res_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'รหัสร้านอาหาร', AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'รหัสผู้ใช้งาน', AUTO_INCREMENT=2;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'รหัสผู้ใช้งาน', AUTO_INCREMENT=3;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
