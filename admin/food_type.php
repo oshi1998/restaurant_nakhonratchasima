@@ -3,8 +3,8 @@ require_once("../services/check_admin.php");
 ?>
 
 <?php
-//select ข้อมูลร้านอาหาร
-$sql = "SELECT * FROM restaurants,food_types WHERE restaurants.ft_id=food_types.ft_id ORDER BY res_id DESC";
+//select ข้อมูลประเภทอาหาร
+$sql = "SELECT * FROM food_types ORDER BY ft_id DESC";
 $query = mysqli_query($conn, $sql);
 $no = 1;
 ?>
@@ -44,7 +44,7 @@ $no = 1;
                 <li><a href="home.php">
                         <em class="fa fa-home"></em>
                     </a></li>
-                <li class="active">จัดการข้อมูลร้านอาหาร</li>
+                <li class="active">จัดการข้อมูลประเภทอาหาร</li>
             </ol>
         </div>
         <!--/.row-->
@@ -52,7 +52,7 @@ $no = 1;
         <div class="row">
             <div class="col-lg-12">
                 <h1 class="page-header">
-                    ตารางข้อมูลร้านอาหาร
+                    ตารางข้อมูลประเภทอาหาร
                 </h1>
             </div>
         </div>
@@ -60,7 +60,7 @@ $no = 1;
 
         <div class="panel panel-container">
             <p style="padding: 10px;">
-                <a href="restaurant_add.php">
+                <a href="food_type_add.php">
                     <i class="fa fa-plus"></i>
                     <span>เพิ่มข้อมูล</span>
                 </a>
@@ -73,9 +73,7 @@ $no = 1;
                                 <thead>
                                     <tr>
                                         <th>ลำดับ</th>
-                                        <th>รูปภาพ</th>
-                                        <th>ชื่อร้านอาหาร</th>
-                                        <th>ประเภทอาหาร</th>
+                                        <th>ชื่อประเภทอาหาร</th>
                                         <th>แก้ไข</th>
                                         <th>ลบ</th>
                                     </tr>
@@ -84,16 +82,12 @@ $no = 1;
                                     <?php foreach ($query as $row) { ?>
                                         <tr>
                                             <td><?= $no++ ?></td>
-                                            <td>
-                                                <img class="img-responsive" src="../images/restaurants/<?= $row['res_image'] ?>" width="100">
-                                            </td>
-                                            <td><?= $row['res_name'] ?></td>
                                             <td><?= $row['ft_name'] ?></td>
                                             <td>
-                                                <a href="restaurant_edit.php?id=<?= $row['res_id'] ?>">แก้ไข</a>
+                                                <a href="food_type_edit.php?id=<?= $row['ft_id'] ?>">แก้ไข</a>
                                             </td>
                                             <td>
-                                                <a href="../services/restaurant_delete.php?id=<?= $row['res_id'] ?>" onclick="return confirm('ยืนยันการลบ?')">ลบ</a>
+                                                <a href="../services/food_type_delete.php?id=<?= $row['ft_id'] ?>" onclick="return confirm('ยืนยันการลบ?')">ลบ</a>
                                             </td>
                                         </tr>
                                     <?php } ?>

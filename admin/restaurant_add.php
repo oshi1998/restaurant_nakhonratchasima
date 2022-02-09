@@ -2,6 +2,12 @@
 require_once("../services/check_admin.php");
 ?>
 
+<?php
+//select ข้อมูลประเภทอาหาร
+$sql = "SELECT * FROM food_types";
+$food_types_query = mysqli_query($conn, $sql);
+?>
+
 <!DOCTYPE html>
 <html>
 
@@ -69,6 +75,15 @@ require_once("../services/check_admin.php");
                                 <input type="text" class="form-control" name="name" required>
                             </div>
                             <div class="form-group">
+                                <label>ประเภทอาหาร</label>
+                                <select class="form-control" name="ft_id" required>
+                                    <option value="" selected disabled>--- เลือกประเภทอาหาร ---</option>
+                                    <?php foreach ($food_types_query as $ft) { ?>
+                                        <option value="<?= $ft['ft_id'] ?>"><?= $ft['ft_name'] ?></option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                            <div class="form-group">
                                 <label>คำอธิบายย่อ</label>
                                 <textarea class="form-control" name="short_desc"></textarea>
                             </div>
@@ -87,6 +102,43 @@ require_once("../services/check_admin.php");
                             <div class="form-group">
                                 <label>บทความเกี่ยวกับร้านอาหาร</label>
                                 <textarea class="form-control" name="full_desc" id="editor"></textarea>
+                            </div>
+
+
+                            <div class="form-group">
+                                <h3>เมนูอาหาร</h3>
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>ชื่อเมนู</th>
+                                            <th>อัพโหลดรูปเมนู</th>
+                                            <th>คำอธิบาย</th>
+                                            <th>ราคา</th>
+                                            <th>
+                                                <button type="button" class="btn btn-success" onclick="addField()">
+                                                    <i class="fa fa-plus"></i>
+                                                    <span>เพิ่มเมนู</span>
+                                                </button>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="menuBodyTable">
+                                        <tr>
+                                            <td>
+                                                <input type="text" class="form-control" name="menu[0][name]" required>
+                                            </td>
+                                            <td>
+                                                <input type="file" class="form-control" name="menu[0][image]" accept="image/*" required>
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control" name="menu[0][description]" required>
+                                            </td>
+                                            <td>
+                                                <input type="number" class="form-control" name="menu[0][price]" required>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                             <button type="submit" class="btn btn-primary">บันทึก</button>
                         </form>
@@ -113,6 +165,40 @@ require_once("../services/check_admin.php");
             filebrowserUploadMethod: 'form',
             filebrowserUploadUrl: '../services/ckeditor_upload_image.php',
         });
+
+        var index = 0;
+
+        function addField() {
+            index++;
+            $('#menuBodyTable').append(
+                `
+                <tr id="menuRow${index}">
+                    <td>
+                        <input type="text" class="form-control" name="menu[${index}][name]" required>
+                    </td>
+                    <td>
+                        <input type="file" class="form-control" name="menu[${index}][image]" accept="image/*" required>
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" name="menu[${index}][description]" required>
+                    </td>
+                    <td>
+                        <input type="number" class="form-control" name="menu[${index}][price]" required>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-danger" onclick="removeField(${index})">
+                            <i class="fa fa-close"></i>
+                            <span>ลบ</span>
+                        </button>
+                    </td>
+                </tr>
+                `
+            );
+        }
+
+        function removeField(index) {
+            $('#menuRow' + index).remove();
+        }
     </script>
 </body>
 

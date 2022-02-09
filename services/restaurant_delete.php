@@ -21,7 +21,11 @@ if (isset($_GET['id'])) {
         unlink($delete_path);
     }
 
-    //delete
+    //delete menu
+    $sql = "DELETE FROM menus WHERE res_id='$id'";
+    mysqli_query($conn,$sql);
+
+    //delete res
     $sql = "DELETE FROM restaurants WHERE res_id='$id'";
     $query = mysqli_query($conn, $sql);
 
