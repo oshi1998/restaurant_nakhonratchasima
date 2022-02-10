@@ -13,6 +13,10 @@ if (isset($_GET['id'])) {
     //select ข้อมูลเมนูอาหาร
     $sql = "SELECT * FROM menus WHERE res_id='$res_id'";
     $menus_query = mysqli_query($conn, $sql);
+
+    //select ข้อมูลความคิดเห็น
+    $sql = "SELECT * FROM comments,users WHERE comments.user_id=users.user_id AND res_id='$res_id' ORDER BY cm_id DESC";
+    $comments_query = mysqli_query($conn, $sql);
 } else {
     echo "<script>window.history.back()</script>";
 }
@@ -67,7 +71,6 @@ if (isset($_SESSION["AUTH_MEMBER_ID"])) {
     <link href="css/style.css" rel="stylesheet" />
     <!-- responsive style -->
     <link href="css/responsive.css" rel="stylesheet" />
-
 </head>
 
 <body class="sub_page">
@@ -191,22 +194,101 @@ if (isset($_SESSION["AUTH_MEMBER_ID"])) {
                         </div>
                     </div>
                 </div>
-                <div class="col-12">
-                    <div class="box">
-                        <div class="detail-box ">
-                            <form class="text-left">
-                                <label>แสดงความคิดเห็นของคุณ</label>
-                                <textarea class="form-control" name="message" required></textarea>
-                                <br>
-                                <button type="submit" class="btn btn-dark float-right">ส่งความคิดเห็น</button>
-                            </form>
+                <?php if (isset($_SESSION["AUTH_MEMBER_ID"])) : ?>
+                    <div class="col-12">
+                        <div class="box">
+                            <div class="detail-box ">
+                                <form id="commentForm" class="text-left" action="services/comment_insert.php" method="post">
+                                    <input name="res_id" value="<?= $dataObj->res_id ?>" readonly hidden>
+                                    <label>แสดงความคิดเห็นของคุณ</label>
+                                    <textarea class="form-control" name="text" id="inputText" required></textarea>
+                                    <br>
+                                    <button type="submit" class="btn btn-dark float-right">ส่งความคิดเห็น</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                <?php endif ?>
+            </div>
+            <?php foreach ($comments_query as $comment) { ?>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="box">
+                            <div class="detail-box">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-1 col-sm-1 col-lg-1 text-left">
+                                                <img src="images/avatar.jpg" width="70">
+                                            </div>
+                                            <div class="col-md-11 col-sm-11 col-lg-11 text-left">
+                                                <strong>
+                                                    <?= $comment['user_firstname'] . " " . $comment['user_lastname'] ?>
+                                                    <a class="float-right text-center" href="javascript:void(0)" onclick="reportComment(<?= $comment['cm_id'] ?>)">
+                                                        <i class="fa fa-flag"></i>
+                                                    </a>
+                                                </strong>
+                                                <p><?= $comment['cm_datetime'] ?></p>
+                                                <p><?= $comment['cm_text'] ?></p>
+                                            </div>
+                                            <?php /* if ($user_id != $comment['user_id']) : */ ?>
+                                            <div class="col-md-1 col-sm-1 col-lg-1">
+
+                                            </div>
+                                            <?php /* endif  */ ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            <?php } ?>
     </section>
 
     <!-- end news section -->
+
+
+    <!-- Report Comment Modal -->
+    <div class="modal fade" id="reportCommentModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">ระบุเหตุผลที่รายงานความคิดเห็นนี้</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <form id="reportCommentForm" action="services/comment_report_update.php" method="post">
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <input name="cm_id" id="report_cm_id" readonly hidden>
+                        <div class="form-group">
+                            <input type="radio" name="reason" value="ข้อความคุกคามทางเพศ" required>
+                            <label>คุกคามทางเพศ</label>
+                            <input type="radio" name="reason" value="คำหยาบคาย" required>
+                            <label>คำหยาบคาย</label>
+                            <input type="radio" name="reason" value="ข้อมูลเท็จ" required>
+                            <label>ข้อมูลเท็จ</label>
+                            <br>
+                            <input type="radio" name="reason" value="คำพูดแสดงความเกลียดชัง" required>
+                            <label>คำพูดแสดงความเกลียดชัง</label>
+                            <input type="radio" name="reason" value="สแปม" required>
+                            <label>สแปม</label>
+                        </div>
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-danger btn-block" onclick="return confirm('ยืนยันการรายงาน?')">รายงาน</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- End Login Modal -->
+
 
     <div class="footer_container">
         <!-- info section -->
@@ -240,6 +322,10 @@ if (isset($_SESSION["AUTH_MEMBER_ID"])) {
     <script src="js/custom.js"></script>
 
     <script>
+        $(document).ready(function() {
+            $('#commentForm')[0].reset();
+        });
+
         function addFavourite(res_id) {
             $.ajax({
                 method: "post",
@@ -273,6 +359,12 @@ if (isset($_SESSION["AUTH_MEMBER_ID"])) {
             }).fail(function(res) {
                 alert(res.responseJSON['msg']);
             });
+        }
+
+        function reportComment(cm_id) {
+            $('#reportCommentForm')[0].reset();
+            $('#report_cm_id').val(cm_id);
+            $('#reportCommentModal').modal('show');
         }
     </script>
 
