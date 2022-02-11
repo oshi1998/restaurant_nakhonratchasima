@@ -26,7 +26,7 @@ $menus_query = mysqli_query($conn, $sql);
 
 <?php
 //select ข้อมูลร้านอาหาร 3 ร้าน
-$sql = "SELECT * FROM restaurants LIMIT 3";
+$sql = "SELECT * FROM restaurants,food_types HAVING restaurants.ft_id=food_types.ft_id LIMIT 3";
 $restaurants_query = mysqli_query($conn, $sql);
 ?>
 
@@ -93,7 +93,7 @@ $restaurants_query = mysqli_query($conn, $sql);
                             <div class="container">
                                 <div class="row">
                                     <div class="col">
-                                        <form>
+                                        <form action="restaurants.php" method="get">
                                             <div class="form-row ">
                                                 <div class="form-group col-lg-5">
                                                     <input type="text" class="form-control" placeholder="ชื่อร้านอาหาร" name="res_name">
@@ -171,6 +171,7 @@ $restaurants_query = mysqli_query($conn, $sql);
                                         <i class="<?= $class ?>" onclick="<?= $function ?>" id="fav<?= $res['res_id'] ?>"></i>
                                     <?php endif ?>
                                 </h4>
+                                <p>ประเภทอาหาร: <?= $res['ft_name'] ?></p>
                                 <a href="detail.php?id=<?= $res['res_id'] ?>">
                                     <i class="fa fa-arrow-right" aria-hidden="true"></i>
                                 </a>

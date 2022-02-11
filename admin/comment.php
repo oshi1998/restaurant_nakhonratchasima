@@ -3,6 +3,22 @@ require_once("../services/check_admin.php");
 ?>
 
 <?php
+//select ข้อมูลความคิดเห็นที่มีความเสี่ยง
+$sql = "SELECT * FROM comments,users
+WHERE cm_text LIKE '%สัส%' 
+OR cm_text LIKE '%สาส%' 
+OR cm_text LIKE '%ควย%' 
+OR cm_text LIKE '%ควาย%'
+OR cm_text LIKE '%เหี้ย%'
+OR cm_text LIKE '%ห่า%'
+HAVING comments.user_id=users.user_id";
+$risk_comments_query = mysqli_query($conn, $sql);
+?>
+
+<?php
+//select ข้อมูลความคิดเห็นที่ถูกรายงาน
+$sql = "SELECT * FROM comments,users WHERE comments.user_id=users.user_id AND cm_report=1";
+$report_comments_query = mysqli_query($conn, $sql);
 ?>
 
 <!DOCTYPE html>
@@ -78,7 +94,16 @@ require_once("../services/check_admin.php");
                                                 </tr>
                                             </thead>
                                             <tbody>
-
+                                                <?php $no = 1; ?>
+                                                <?php foreach ($risk_comments_query as $row) { ?>
+                                                    <tr>
+                                                        <td><?= $no++; ?></td>
+                                                        <td><?= $row['user_firstname'] . " " . $row['user_lastname'] ?></td>
+                                                        <td><?= $row['cm_text'] ?></td>
+                                                        <td><?= $row['cm_datetime'] ?></td>
+                                                        <td><a href="../services/comment_delete.php?id=<?= $row['cm_id'] ?>" onclick="return confirm('ยืนยันการลบ?')">ลบ</a></td>
+                                                    </tr>
+                                                <?php } ?>
                                             </tbody>
                                         </table>
                                     </div>
@@ -94,13 +119,21 @@ require_once("../services/check_admin.php");
                                                     <th>ข้อความ</th>
                                                     <th>แสดงความคิดเห็นเมื่อ</th>
                                                     <th>สาเหตุ</th>
-                                                    <th>ผู้รายงาน</th>
-                                                    <th>รายงานเมื่อ</th>
                                                     <th>ลบ</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-
+                                                <?php $no = 1; ?>
+                                                <?php foreach ($report_comments_query as $row) { ?>
+                                                    <tr>
+                                                        <td><?= $no++; ?></td>
+                                                        <td><?= $row['user_firstname'] . " " . $row['user_lastname'] ?></td>
+                                                        <td><?= $row['cm_text'] ?></td>
+                                                        <td><?= $row['cm_datetime'] ?></td>
+                                                        <td><?= $row['cm_report_reason'] ?></td>
+                                                        <td><a href="../services/comment_delete.php?id=<?= $row['cm_id'] ?>" onclick="return confirm('ยืนยันการลบ?')">ลบ</a></td>
+                                                    </tr>
+                                                <?php } ?>
                                             </tbody>
                                         </table>
                                     </div>

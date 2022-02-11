@@ -20,8 +20,29 @@ $foot_types_query = mysqli_query($conn, $sql);
 
 <?php
 //select ข้อมูลร้านอาหาร
-$sql = "SELECT * FROM restaurants";
+if (isset($_GET['res_name']) && isset($_GET['food_type'])) {
+
+    $sql = "SELECT * FROM restaurants,food_types WHERE res_name LIKE '%$_GET[res_name]%' AND restaurants.ft_id='$_GET[food_type]' HAVING restaurants.ft_id=food_types.ft_id";
+
+} else if (isset($_GET['res_name']) && !isset($_GET['food_type'])) {
+
+    $sql = "SELECT * FROM restaurants,food_types WHERE res_name LIKE '%$_GET[res_name]%' HAVING restaurants.ft_id=food_types.ft_id";
+
+} else if (!isset($_GET['res_name']) && empty($_GET['res_name']) && isset($_GET['food_type'])) {
+
+    $sql = "SELECT * FROM restaurants,food_types WHERE restaurants.ft_id='$_GET[food_type]' HAVING restaurants.ft_id=food_types.ft_id";
+
+} else {
+
+    $sql = "SELECT * FROM restaurants,food_types HAVING restaurants.ft_id=food_types.ft_id";
+}
+
 $restaurants_query = mysqli_query($conn, $sql);
+
+if (mysqli_num_rows($restaurants_query) <= 0) {
+    $sql = "SELECT * FROM restaurants,food_types HAVING restaurants.ft_id=food_types.ft_id";
+    $restaurants_query = mysqli_query($conn, $sql);
+}
 ?>
 
 <!DOCTYPE html>
@@ -82,7 +103,7 @@ $restaurants_query = mysqli_query($conn, $sql);
                     <div class="container">
                         <div class="row">
                             <div class="col">
-                                <form>
+                                <form action="restaurants.php" method="get">
                                     <div class="form-row">
                                         <div class="form-group col-lg-5">
                                             <input type="text" class="form-control" placeholder="ชื่อร้านอาหาร" name="res_name">
@@ -135,6 +156,7 @@ $restaurants_query = mysqli_query($conn, $sql);
                                         <i class="<?= $class ?>" onclick="<?= $function ?>" id="fav<?= $res['res_id'] ?>"></i>
                                     <?php endif ?>
                                 </h4>
+                                <p>ประเภทอาหาร: <?= $res['ft_name'] ?></p>
                                 <a href="detail.php?id=<?= $res['res_id'] ?>">
                                     <i class="fa fa-arrow-right" aria-hidden="true"></i>
                                 </a>
