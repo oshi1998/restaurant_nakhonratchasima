@@ -12,6 +12,10 @@
                             <i class="fa fa-user" aria-hidden="true"></i>
                             <span><?= "ยินดีต้อนรับ, " . $userObj->user_firstname ?></span>
                         </a>
+                        <a href="myrestaurant.php">
+                            <i class="fa fa-spoon"></i>
+                            <span>ร้านอาหารของฉัน</span>
+                        </a>
                         <a href="services/logout.php">
                             <i class="fa fa-sign-out"></i>
                             <span>ออกจากระบบ</span>

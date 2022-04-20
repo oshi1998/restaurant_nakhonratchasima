@@ -22,25 +22,22 @@ $foot_types_query = mysqli_query($conn, $sql);
 //select ข้อมูลร้านอาหาร
 if (isset($_GET['res_name']) && isset($_GET['food_type'])) {
 
-    $sql = "SELECT * FROM restaurants,food_types WHERE res_name LIKE '%$_GET[res_name]%' AND restaurants.ft_id='$_GET[food_type]' HAVING restaurants.ft_id=food_types.ft_id";
-
+    $sql = "SELECT * FROM restaurants,food_types WHERE res_status=1 AND res_name LIKE '%$_GET[res_name]%' AND restaurants.ft_id='$_GET[food_type]' HAVING restaurants.ft_id=food_types.ft_id";
 } else if (isset($_GET['res_name']) && !isset($_GET['food_type'])) {
 
-    $sql = "SELECT * FROM restaurants,food_types WHERE res_name LIKE '%$_GET[res_name]%' HAVING restaurants.ft_id=food_types.ft_id";
-
+    $sql = "SELECT * FROM restaurants,food_types WHERE res_status=1 AND res_name LIKE '%$_GET[res_name]%' HAVING restaurants.ft_id=food_types.ft_id";
 } else if (!isset($_GET['res_name']) && empty($_GET['res_name']) && isset($_GET['food_type'])) {
 
-    $sql = "SELECT * FROM restaurants,food_types WHERE restaurants.ft_id='$_GET[food_type]' HAVING restaurants.ft_id=food_types.ft_id";
-
+    $sql = "SELECT * FROM restaurants,food_types WHERE res_status=1 AND restaurants.ft_id='$_GET[food_type]' HAVING restaurants.ft_id=food_types.ft_id";
 } else {
 
-    $sql = "SELECT * FROM restaurants,food_types HAVING restaurants.ft_id=food_types.ft_id";
+    $sql = "SELECT * FROM restaurants,food_types WHERE res_status=1 HAVING restaurants.ft_id=food_types.ft_id";
 }
 
 $restaurants_query = mysqli_query($conn, $sql);
 
 if (mysqli_num_rows($restaurants_query) <= 0) {
-    $sql = "SELECT * FROM restaurants,food_types HAVING restaurants.ft_id=food_types.ft_id";
+    $sql = "SELECT * FROM restaurants,food_types WHERE res_status=1 HAVING restaurants.ft_id=food_types.ft_id";
     $restaurants_query = mysqli_query($conn, $sql);
 }
 ?>
@@ -133,7 +130,7 @@ if (mysqli_num_rows($restaurants_query) <= 0) {
                     <div class="col-sm-6 col-md-3 mx-auto">
                         <div class="box">
                             <div class="img-box">
-                                <img src="images/restaurants/<?= $res['res_image'] ?>" class="box-img" alt="<?= $res['res_name'] ?>">
+                                <img src="images/restaurants/<?= $res['res_image'] ?>" class="box-img" width="150" height="300" alt="<?= $res['res_name'] ?>">
                             </div>
                             <div class="detail-box">
                                 <h4>

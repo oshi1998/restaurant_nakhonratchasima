@@ -26,7 +26,7 @@ $menus_query = mysqli_query($conn, $sql);
 
 <?php
 //select ข้อมูลร้านอาหาร 3 ร้าน
-$sql = "SELECT * FROM restaurants,food_types HAVING restaurants.ft_id=food_types.ft_id LIMIT 3";
+$sql = "SELECT * FROM restaurants,food_types WHERE res_status=1 HAVING restaurants.ft_id=food_types.ft_id LIMIT 3";
 $restaurants_query = mysqli_query($conn, $sql);
 ?>
 

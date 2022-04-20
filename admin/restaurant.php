@@ -76,6 +76,7 @@ $no = 1;
                                         <th>รูปภาพ</th>
                                         <th>ชื่อร้านอาหาร</th>
                                         <th>ประเภทอาหาร</th>
+                                        <th>สถานะ</th>
                                         <th>แก้ไข</th>
                                         <th>ลบ</th>
                                     </tr>
@@ -89,6 +90,13 @@ $no = 1;
                                             </td>
                                             <td><?= $row['res_name'] ?></td>
                                             <td><?= $row['ft_name'] ?></td>
+                                            <td>
+                                                <?php if ($row['res_status'] == 0) : ?>
+                                                    <span class="badge bg-danger">ไม่เผยแพร่</span>
+                                                <?php else : ?>
+                                                    <span class="badge bg-success">เผยแพร่</span>
+                                                <?php endif ?>
+                                            </td>
                                             <td>
                                                 <a href="restaurant_edit.php?id=<?= $row['res_id'] ?>">แก้ไข</a>
                                             </td>

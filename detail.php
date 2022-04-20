@@ -148,6 +148,19 @@ if (isset($_SESSION["AUTH_MEMBER_ID"])) {
                 <div class="col-12 mx-auto">
                     <div class="box">
                         <div class="detail-box">
+                            <h3>แผนที่</h3>
+                            <p>
+                                <?= $dataObj->res_map ?>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-12 mx-auto">
+                    <div class="box">
+                        <div class="detail-box">
                             <h3>บทความ</h3>
                         </div>
                     </div>
@@ -244,6 +257,7 @@ if (isset($_SESSION["AUTH_MEMBER_ID"])) {
                     </div>
                 </div>
             <?php } ?>
+        </div>
     </section>
 
     <!-- end news section -->

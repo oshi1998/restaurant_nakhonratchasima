@@ -3,7 +3,7 @@
 if (isset($_POST['name'])) {
 
     //include ไฟล์เชื่อมฐานข้อมูล
-    require_once("connect.php");
+    require_once("../connect.php");
 
     //รับค่าจาก post
     $name = mysqli_real_escape_string($conn, $_POST["name"]);
@@ -13,11 +13,11 @@ if (isset($_POST['name'])) {
     $full_desc = mysqli_real_escape_string($conn, $_POST['full_desc']);
     $ft_id = mysqli_real_escape_string($conn, $_POST['ft_id']);
     $map = mysqli_real_escape_string($conn, $_POST['map']);
-    $status = mysqli_real_escape_string($conn, $_POST['status']);
+    $status = 0;
 
     //รับค่าจาก session
     session_start();
-    $user_id = mysqli_real_escape_string($conn, $_SESSION['AUTH_ID']);
+    $user_id = mysqli_real_escape_string($conn, $_SESSION['AUTH_MEMBER_ID']);
 
     //รับค่าตัวแปรจาก FILES
     $fileName = $_FILES["image"]["name"];
@@ -27,7 +27,7 @@ if (isset($_POST['name'])) {
     if (!empty($fileName)) {
         $ext = strrchr($fileName, '.'); //ตัดสตริงเอา.สกุลไฟล์
         $image = uniqid() . $ext; //ตั้งชื่อไฟล์ใหม่
-        $upload_path = "../images/restaurants/$image";
+        $upload_path = "../../images/restaurants/$image";
         move_uploaded_file($tempName, $upload_path); //อัพโหลดไฟล์
     } else {
         echo "<script>
@@ -54,7 +54,7 @@ if (isset($_POST['name'])) {
 
             $ext = strrchr($fileName, '.'); //ตัดสตริงเอา.สกุลไฟล์
             $image = uniqid() . $ext; //ตั้งชื่อไฟล์ใหม่
-            $upload_path = "../images/menus/$image";
+            $upload_path = "../../images/menus/$image";
             move_uploaded_file($tempName, $upload_path); //อัพโหลดไฟล์
 
             //sql insert
@@ -64,8 +64,8 @@ if (isset($_POST['name'])) {
         }
 
         echo "<script>
-            alert('สำเร็จ');
-            window.location = '../admin/restaurant.php'
+            alert('สำเร็จ ร้านอาหารจะถูกเผยแพร่เมื่อผ่านการตรวจสอบจากผู้ดูแลระบบ');
+            window.location = '../../myrestaurant.php'
         </script>";
     } else {
         echo "<script>

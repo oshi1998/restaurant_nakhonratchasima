@@ -100,6 +100,18 @@ $food_types_query = mysqli_query($conn, $sql);
                                 <input type="file" class="form-control" name="image" accept="image/*" required>
                             </div>
                             <div class="form-group">
+                                <label>ลิ้ง Google Map</label>
+                                <textarea class="form-control" name="map"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>สถานะ</label>
+                                <select class="form-control" name="status" required>
+                                    <option value="" selected disabled>--- เลือกสถานะ ---</option>
+                                    <option value="0">ไม่เผยแพร่</option>
+                                    <option value="1">เผยแพร่</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
                                 <label>บทความเกี่ยวกับร้านอาหาร</label>
                                 <textarea class="form-control" name="full_desc" id="editor"></textarea>
                             </div>

@@ -1,111 +1,130 @@
 <?php
-require_once("../services/check_admin.php");
-?>
+session_start();
+if (isset($_SESSION["AUTH_MEMBER_ID"])) {
 
-<?php
-//select ข้อมูลประเภทอาหาร
-$sql = "SELECT * FROM food_types";
-$food_types_query = mysqli_query($conn, $sql);
-?>
+    include("services/connect.php");
 
+    $user_id = $_SESSION["AUTH_MEMBER_ID"];
 
-<?php
-if (isset($_GET['id'])) {
-    $id = mysqli_real_escape_string($conn, $_GET['id']);
-
-    $sql = "SELECT * FROM restaurants WHERE res_id='$id'";
+    $sql = "SELECT * FROM users WHERE user_id='$user_id'";
     $query = mysqli_query($conn, $sql);
-    $dataObj = mysqli_fetch_object($query);
+    $userObj = mysqli_fetch_object($query);
 
-    $sql = "SELECT * FROM menus WHERE res_id='$id'";
-    $menus_query = mysqli_query($conn, $sql);
+    if (isset($_GET['id'])) {
+        $id = mysqli_real_escape_string($conn, $_GET['id']);
+
+        $sql = "SELECT * FROM restaurants WHERE res_id='$id'";
+        $query = mysqli_query($conn, $sql);
+        $dataObj = mysqli_fetch_object($query);
+
+        $sql = "SELECT * FROM menus WHERE res_id='$id'";
+        $menus_query = mysqli_query($conn, $sql);
+
+        //select ข้อมูลประเภทอาหาร
+        $sql = "SELECT * FROM food_types";
+        $food_types_query = mysqli_query($conn, $sql);
+    } else {
+        echo "<script>window.history.back()</script>";
+    }
 } else {
-    echo "<script>window.history.back()</script>";
+    header("location:home.php");
 }
+
 ?>
 
 <!DOCTYPE html>
 <html>
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>ระบบจัดการสวนน้ำมารีน่า</title>
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/font-awesome.min.css" rel="stylesheet">
-    <link href="css/datepicker3.css" rel="stylesheet">
-    <link href="css/styles.css" rel="stylesheet">
+    <!-- Basic -->
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!-- Mobile Metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <!-- Site Metas -->
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
 
-    <!--Custom Font-->
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
-    <!--[if lt IE 9]>
-	<script src="js/html5shiv.js"></script>
-	<script src="js/respond.min.js"></script>
-	<![endif]-->
+    <title>เว็บไซต์แนะนำร้านอาหารยอดนิยม จังหวัดนครสวรรค์</title>
+
+
+    <!-- bootstrap core css -->
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
+
+    <!-- fonts style -->
+    <link href="https://fonts.googleapis.com/css?family=Poppins:400,600,700&display=swap" rel="stylesheet">
+
+    <!-- font awesome style -->
+    <link href="css/font-awesome.min.css" rel="stylesheet" />
+    <!-- nice select -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-nice-select/1.1.0/css/nice-select.min.css" integrity="sha256-mLBIhmBvigTFWPSCtvdu6a76T+3Xyt+K571hupeFLg4=" crossorigin="anonymous" />
+    <!-- slidck slider -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.css" integrity="sha256-UK1EiopXIL+KVhfbFa8xrmAWPeBjMVdvYMYkTAEv/HI=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick-theme.min.css.map" integrity="undefined" crossorigin="anonymous" />
+
+
+    <!-- Custom styles for this template -->
+    <link href="css/style.css" rel="stylesheet" />
+    <!-- responsive style -->
+    <link href="css/responsive.css" rel="stylesheet" />
 </head>
 
-<body>
-    <!-- start include navbar -->
-    <?php include("layouts/navbar.php"); ?>
-    <!-- end include navbar -->
+<body class="sub_page">
 
-    <!-- start include sidebar -->
-    <?php include("layouts/sidebar.php"); ?>
-    <!-- end include sidebar -->
+    <div class="hero_area">
+        <!-- header section strats -->
+        <?php include("header.php") ?>
+        <!-- end header section -->
+    </div>
 
-    <div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
-        <div class="row">
-            <ol class="breadcrumb">
-                <li><a href="home.php">
-                        <em class="fa fa-home"></em>
-                    </a></li>
-                <li><a href="restaurant.php">จัดการข้อมูลร้านอาหาร</a></li>
-                <li class="active">แก้ไขข้อมูล</li>
-            </ol>
-        </div>
-        <!--/.row-->
-
-        <div class="row">
-            <div class="col-lg-12">
-                <h1 class="page-header">
-                    แก้ไขข้อมูลร้านอาหาร
-                </h1>
+    <!-- news section -->
+    <section class="news_section layout_padding">
+        <div class="container">
+            <div class="heading_container heading_center">
+                <h2>
+                    แบบฟอร์มแก้ไขร้านอาหาร
+                </h2>
+                <div class="box mt-0">
+                    <div class="detail-box">
+                        <a href="#" onclick="window.history.back()">
+                            <i class="fa fa-arrow-left"></i>
+                        </a>
+                    </div>
+                </div>
             </div>
-        </div>
-        <!--/.row-->
 
-        <div class="panel panel-container">
-            <p style="padding: 10px;">
-                <a href="#" onclick="window.history.back()">
-                    <i class="fa fa-arrow-left"></i>
-                    <span>ย้อนกลับ</span>
-                </a>
-            </p>
+            <div class="panel panel-container">
 
-            <div class="row">
-                <div class="col-sm-6 col-lg-12">
-                    <div class="panel-body">
-                        <div class="panel-body tabs">
-                            <ul class="nav nav-tabs">
-                                <li class="active"><a href="#tab1" data-toggle="tab">ข้อมูลร้านอาหาร</a></li>
-                                <li><a href="#tab2" data-toggle="tab">เมนูอาหาร</a></li>
+
+                <div class="row">
+                    <div class="col-sm-6 col-lg-12">
+                        <div class="panel-body">
+                            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="pills-tab1-tab" data-toggle="pill" href="#pills-tab1" role="tab" aria-controls="pills-tab1" aria-selected="true">ข้อมูลร้านอาหาร</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="pills-tab2-tab" data-toggle="pill" href="#pills-tab2" role="tab" aria-controls="pills-tab2" aria-selected="false">เมนูอาหาร</a>
+                                </li>
                             </ul>
-                            <div class="tab-content">
-                                <div class="tab-pane fade in active" id="tab1">
-                                    <form action="../services/restaurant_update.php" method="post" enctype="multipart/form-data">
+                            <div class="tab-content" id="pills-tabContent">
+                                <div class="tab-pane fade show active" id="pills-tab1" role="tabpanel" aria-labelledby="pills-tab1-tab">
+                                    <form action="services/member-side/restaurant_update.php" method="post" enctype="multipart/form-data">
                                         <input name="id" value="<?= $id ?>" readonly hidden>
                                         <div class="form-group">
                                             <label>ชื่อร้านอาหาร</label>
                                             <input type="text" class="form-control" name="name" value="<?= $dataObj->res_name ?>" required>
                                         </div>
                                         <div class="form-group">
-                                            <label>ประเภทอาหาร</label>
+                                            <label>ประเภทอาหาร</label> <br>
                                             <select class="form-control" name="ft_id" required>
                                                 <?php foreach ($food_types_query as $ft) { ?>
                                                     <option value="<?= $ft['ft_id'] ?>" <?= ($dataObj->ft_id == $ft['ft_id']) ? "selected" : "" ?>><?= $ft['ft_name'] ?></option>
                                                 <?php } ?>
                                             </select>
                                         </div>
+                                        <br><br>
                                         <div class="form-group">
                                             <label>คำอธิบายย่อ</label>
                                             <textarea class="form-control" name="short_desc"><?= $dataObj->res_short_desc ?></textarea>
@@ -120,7 +139,7 @@ if (isset($_GET['id'])) {
                                         </div>
                                         <div class="form-group">
                                             <label>รูปภาพ</label><br>
-                                            <img src="../images/restaurants/<?= $dataObj->res_image ?>" width="200">
+                                            <img src="images/restaurants/<?= $dataObj->res_image ?>" width="200">
                                             <input name="old_image" value="<?= $dataObj->res_image ?>" readonly hidden>
                                             <input type="file" class="form-control" name="image" accept="image/*">
                                         </div>
@@ -129,23 +148,15 @@ if (isset($_GET['id'])) {
                                             <textarea class="form-control" name="map"><?= $dataObj->res_map ?></textarea>
                                         </div>
                                         <div class="form-group">
-                                            <label>สถานะ</label>
-                                            <select class="form-control" name="status" required>
-                                                <option value="" selected disabled>--- เลือกสถานะ ---</option>
-                                                <option value="0" <?= ($dataObj->res_status==0) ? "selected" : "" ?>>ไม่เผยแพร่</option>
-                                                <option value="1" <?= ($dataObj->res_status==1) ? "selected" : "" ?>>เผยแพร่</option>
-                                            </select>
-                                        </div>
-                                        <div class="form-group">
                                             <label>บทความเกี่ยวกับร้านอาหาร</label>
                                             <textarea class="form-control" name="full_desc" id="editor"><?= $dataObj->res_full_desc ?></textarea>
                                         </div>
                                         <button type="submit" class="btn btn-primary">บันทึก</button>
                                     </form>
                                 </div>
-                                <div class="tab-pane fade" id="tab2">
+                                <div class="tab-pane fade" id="pills-tab2" role="tabpanel" aria-labelledby="pills-tab2-tab">
                                     <h3>แบบฟอร์มแก้ไขเมนูอาหารเดิม</h3>
-                                    <form action="../services/menu_update.php" method="post" enctype="multipart/form-data">
+                                    <form action="services/member-side/menu_update.php" method="post" enctype="multipart/form-data">
                                         <table class="table table-bordered">
                                             <thead>
                                                 <tr>
@@ -163,7 +174,7 @@ if (isset($_GET['id'])) {
                                                             <input type="text" class="form-control" name="menu[<?= $menu['mn_id'] ?>][name]" value="<?= $menu['mn_name'] ?>" required>
                                                         </td>
                                                         <td>
-                                                            <img src="../images/menus/<?= $menu['mn_image'] ?>" width="75" height="75">
+                                                            <img src="images/menus/<?= $menu['mn_image'] ?>" width="75" height="75">
                                                             <input name="menu[<?= $menu['mn_id'] ?>][old_image]" value="<?= $menu['mn_image'] ?>" readonly hidden>
                                                             <input type="file" class="form-control" name="menu[<?= $menu['mn_id'] ?>][image]" accept="image/*">
                                                         </td>
@@ -174,7 +185,7 @@ if (isset($_GET['id'])) {
                                                             <input type="number" class="form-control" name="menu[<?= $menu['mn_id'] ?>][price]" value="<?= $menu['mn_price'] ?>" required>
                                                         </td>
                                                         <td>
-                                                            <a href="../services/menu_delete.php?id=<?= $menu['mn_id'] ?>" class="btn btn-danger" onclick="return confirm('ยืนยันการลบ?')">
+                                                            <a href="services/menu_delete.php?id=<?= $menu['mn_id'] ?>" class="btn btn-danger" onclick="return confirm('ยืนยันการลบ?')">
                                                                 <i class="fa fa-close"></i>
                                                                 <span>ลบ</span>
                                                             </a>
@@ -189,7 +200,7 @@ if (isset($_GET['id'])) {
                                     <br>
 
                                     <h3>แบบฟอร์มเพิ่มเมนูอาหาร</h3>
-                                    <form action="../services/menu_insert.php" method="post" enctype="multipart/form-data">
+                                    <form action="services/member-side/menu_insert.php" method="post" enctype="multipart/form-data">
                                         <input name="res_id" value="<?= $id ?>" readonly hidden>
                                         <table class="table table-bordered">
                                             <thead>
@@ -232,19 +243,72 @@ if (isset($_GET['id'])) {
                 </div>
             </div>
         </div>
-    </div>
-    </div>
-    <!--/.main-->
+    </section>
 
-    <script src="js/jquery-1.11.1.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/chart.min.js"></script>
-    <script src="js/chart-data.js"></script>
-    <script src="js/easypiechart.js"></script>
-    <script src="js/easypiechart-data.js"></script>
-    <script src="js/bootstrap-datepicker.js"></script>
+
+    <!-- end news section -->
+
+
+    <!-- Report Comment Modal -->
+    <div class="modal fade" id="howToShareGoogleMapModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">วิธีแชร์แผนที่ Google Map</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <ul>
+                        <li>เข้า <a target="_blank" href="https://www.google.co.th/maps/">https://www.google.co.th/maps/</a></li>
+                        <li>ค้นหาร้านอาหารของคุณ</li>
+                        <li>กดที่ปุ่มแชร์</li>
+                        <li>กดที่เมนูฝังแผนที่ บนหน้าต่างที่เด้งขึ้นมา</li>
+                        <li>เลือกขนาดเป็นปานกลาง</li>
+                        <li>กดคัดลอก HTML</li>
+                        <li>วางโค้ดลงในช่อง</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Login Modal -->
+
+
+    <div class="footer_container">
+        <!-- info section -->
+        <section class="info_section ">
+        </section>
+        <!-- end info_section -->
+
+
+        <!-- footer section -->
+        <footer class="footer_section">
+            <div class="container">
+                <p>
+                    &copy; <span id="displayYear"></span> สงวนลิขสิทธิ์โดย
+                    <a href="home.php">เว็บไซต์แนะนำร้านอาหาร จังหวัดนครสวรรค์</a><br>
+                    จัดทำโดย: <a target="_blank" href="https://www.facebook.com/kiwtynaha">คิว</a>
+                </p>
+            </div>
+        </footer>
+        <!-- footer section -->
+
+    </div>
+    <!-- jQery -->
+    <script src="js/jquery-3.4.1.min.js"></script>
+    <!-- bootstrap js -->
+    <script src="js/bootstrap.js"></script>
+    <!-- slick  slider -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.js"></script>
+    <!-- nice select -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-nice-select/1.1.0/js/jquery.nice-select.min.js" integrity="sha256-Zr3vByTlMGQhvMfgkQ5BtWRSKBGa2QlspKYJnkjZTmo=" crossorigin="anonymous"></script>
+    <!-- custom js -->
     <script src="js/custom.js"></script>
-    <script src="ckeditor/ckeditor.js"></script>
+    <!-- ckeditor -->
+    <script src="admin/ckeditor/ckeditor.js"></script>
 
     <script>
         CKEDITOR.replace('editor', {
@@ -287,6 +351,7 @@ if (isset($_GET['id'])) {
             $('#menuRow' + index).remove();
         }
     </script>
+
 </body>
 
 </html>

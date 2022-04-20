@@ -817,4 +817,8 @@ a:focus {
   cursor: pointer;
 }
 
+iframe {
+  width: 100%;
+}
+
 /*# sourceMappingURL=style.css.map */

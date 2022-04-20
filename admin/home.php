@@ -2,6 +2,22 @@
 require_once("../services/check_admin.php");
 ?>
 
+<?php
+//select จำนวนข้อมูลต่างๆ ในระบบ
+$sql = "SELECT (SELECT COUNT(*) FROM restaurants WHERE res_status=1) as res_num,
+(SELECT COUNT(*) FROM users WHERE user_role=1) as user1_num,
+(SELECT COUNT(*) FROM comments) as cm_num";
+$query = mysqli_query($conn, $sql);
+$countObj = mysqli_fetch_object($query);
+?>
+
+<?php
+//select ข้อมูลร้านอาหาร
+$sql = "SELECT * FROM restaurants,food_types,users WHERE restaurants.ft_id=food_types.ft_id AND restaurants.user_id=users.user_id AND res_status=0 AND user_role=1 ORDER BY res_id DESC";
+$query = mysqli_query($conn, $sql);
+$no = 1;
+?>
+
 <!DOCTYPE html>
 <html>
 
@@ -49,42 +65,86 @@ require_once("../services/check_admin.php");
 		</div>
 		<!--/.row-->
 
-		<!-- <div class="panel panel-container">
+		<div class="panel panel-container">
 			<div class="row">
 				<div class="col-xs-6 col-md-3 col-lg-3 no-padding">
 					<div class="panel panel-teal panel-widget border-right">
-						<div class="row no-padding"><em class="fa fa-xl fa-shopping-cart color-blue"></em>
-							<div class="large">120</div>
-							<div class="text-muted">New Orders</div>
+						<div class="row no-padding"><em class="fa fa-xl fa-home color-blue"></em>
+							<div class="large"><?= $countObj->res_num ?></div>
+							<div class="text-muted">ร้านอาหาร</div>
 						</div>
 					</div>
 				</div>
 				<div class="col-xs-6 col-md-3 col-lg-3 no-padding">
 					<div class="panel panel-blue panel-widget border-right">
 						<div class="row no-padding"><em class="fa fa-xl fa-comments color-orange"></em>
-							<div class="large">52</div>
-							<div class="text-muted">Comments</div>
+							<div class="large"><?= $countObj->cm_num ?></div>
+							<div class="text-muted">ความคิดเห็น</div>
 						</div>
 					</div>
 				</div>
 				<div class="col-xs-6 col-md-3 col-lg-3 no-padding">
 					<div class="panel panel-orange panel-widget border-right">
 						<div class="row no-padding"><em class="fa fa-xl fa-users color-teal"></em>
-							<div class="large">24</div>
-							<div class="text-muted">New Users</div>
-						</div>
-					</div>
-				</div>
-				<div class="col-xs-6 col-md-3 col-lg-3 no-padding">
-					<div class="panel panel-red panel-widget ">
-						<div class="row no-padding"><em class="fa fa-xl fa-search color-red"></em>
-							<div class="large">25.2k</div>
-							<div class="text-muted">Page Views</div>
+							<div class="large"><?= $countObj->user1_num ?></div>
+							<div class="text-muted">สมาชิกทั่วไป</div>
 						</div>
 					</div>
 				</div>
 			</div>
-		</div> -->
+		</div>
+
+		<hr style="border: 2px solid black;">
+
+		<div class="panel panel-container">
+			<div class="row">
+				<div class="col-xs-12 col-md-12 col-lg-12 no-padding">
+					<div class="panel panel-teal panel-widget border-right">
+						<h3>รายการร้านอาหารรอตรวจสอบ (จากสมาชิกทั่วไป)</h3>
+
+
+						<div class="panel-body">
+							<div class="table-responsive">
+								<table class="table table-striped">
+									<thead>
+										<tr>
+											<th>ลำดับ</th>
+											<th>รูปภาพ</th>
+											<th>ชื่อร้านอาหาร</th>
+											<th>ประเภทอาหาร</th>
+											<th>สถานะ</th>
+											<th>ตรวจสอบ</th>
+										</tr>
+									</thead>
+									<tbody>
+										<?php foreach ($query as $row) { ?>
+											<tr class="text-left">
+												<td><?= $no++ ?></td>
+												<td>
+													<img class="img-responsive" src="../images/restaurants/<?= $row['res_image'] ?>" width="100">
+												</td>
+												<td><?= $row['res_name'] ?></td>
+												<td><?= $row['ft_name'] ?></td>
+												<td>
+													<?php if ($row['res_status'] == 0) : ?>
+														<span class="badge bg-danger">ไม่เผยแพร่</span>
+													<?php else : ?>
+														<span class="badge bg-success">เผยแพร่</span>
+													<?php endif ?>
+												</td>
+												<td>
+													<a href="restaurant_info.php?id=<?= $row['res_id'] ?>">ตรวจสอบ</a>
+												</td>
+											</tr>
+										<?php } ?>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 	<!--/.main-->
 

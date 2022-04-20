@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 11, 2022 at 07:01 PM
+-- Generation Time: Apr 08, 2022 at 04:23 PM
 -- Server version: 10.4.19-MariaDB
 -- PHP Version: 8.0.6
 
@@ -37,6 +37,13 @@ CREATE TABLE `comments` (
   `user_id` int(11) NOT NULL COMMENT 'รหัสผู้ใช้งาน'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Dumping data for table `comments`
+--
+
+INSERT INTO `comments` (`cm_id`, `cm_text`, `cm_datetime`, `cm_report`, `cm_report_reason`, `res_id`, `user_id`) VALUES
+(23, 'อาหารอร่อยมากครับ', '2022-03-26 19:44:16', 0, NULL, 10, 4);
+
 -- --------------------------------------------------------
 
 --
@@ -48,6 +55,13 @@ CREATE TABLE `favourites` (
   `user_id` int(11) NOT NULL COMMENT 'รหัสผู้ใช้งาน',
   `res_id` int(11) NOT NULL COMMENT 'รหัสร้านอาหาร'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `favourites`
+--
+
+INSERT INTO `favourites` (`fav_id`, `user_id`, `res_id`) VALUES
+(13, 4, 10);
 
 -- --------------------------------------------------------
 
@@ -112,17 +126,20 @@ CREATE TABLE `restaurants` (
   `res_url` text NOT NULL COMMENT 'ลิ้ง url',
   `res_office_time` text NOT NULL COMMENT 'เวลาทำการ',
   `res_image` text NOT NULL COMMENT 'รูปภาพร้านอาหาร',
-  `ft_id` int(11) DEFAULT NULL COMMENT 'รหัสประเภทอาหาร'
+  `res_map` text NOT NULL COMMENT 'แผนที่',
+  `res_status` int(1) NOT NULL COMMENT '0=ไม่เผยแพร่,1=เผยแพร่',
+  `ft_id` int(11) DEFAULT NULL COMMENT 'รหัสประเภทอาหาร',
+  `user_id` int(11) NOT NULL COMMENT 'รหัสผู้ใช้งาน'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `restaurants`
 --
 
-INSERT INTO `restaurants` (`res_id`, `res_name`, `res_short_desc`, `res_full_desc`, `res_url`, `res_office_time`, `res_image`, `ft_id`) VALUES
-(9, 'บ้านอีสาน นครสวรรค์', '', '', 'https://www.facebook.com/baanesan/', 'ทุกวัน 11.00-23.00 น.', '61ffc09516d52.jpg', 4),
-(10, 'Cup and away', '', '', 'https://www.facebook.com/cupandawaycafe/', 'จันทร์-พุธ เวลา 07.00 - 18.00 น. , ศุกร์-อาทิตย์ เวลา 07.00-18.00 น.', '62011861e810f.jpg', 3),
-(11, 'หน้าผา ปลาทอดมัน', '', '', 'https://www.facebook.com/ampbeatbox/', 'ทุกวัน 09.00-21.00 น.', '6201198264a01.jpg', 3);
+INSERT INTO `restaurants` (`res_id`, `res_name`, `res_short_desc`, `res_full_desc`, `res_url`, `res_office_time`, `res_image`, `res_map`, `res_status`, `ft_id`, `user_id`) VALUES
+(9, 'บ้านอีสาน นครสวรรค์', '', '', 'https://www.facebook.com/baanesan/', 'ทุกวัน 11.00-23.00 น.', '61ffc09516d52.jpg', '', 1, 4, 1),
+(10, 'Cup and away', '', '', 'https://www.facebook.com/cupandawaycafe/', 'จันทร์-พุธ เวลา 07.00 - 18.00 น. , ศุกร์-อาทิตย์ เวลา 07.00-18.00 น.', '62011861e810f.jpg', '', 1, 3, 1),
+(11, 'หน้าผา ปลาทอดมัน', '', '', 'https://www.facebook.com/ampbeatbox/', 'ทุกวัน 09.00-21.00 น.', '6201198264a01.jpg', '', 1, 3, 1);
 
 -- --------------------------------------------------------
 
@@ -145,7 +162,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `user_username`, `user_firstname`, `user_lastname`, `user_email`, `user_password`, `user_role`) VALUES
-(1, 'admin', 'เจ้าหน้าที่', 'ดูแลระบบ', 'admin@gmail.com', 'x123456', 0);
+(1, 'admin', 'เจ้าหน้าที่', 'ดูแลระบบ', 'admin@gmail.com', 'x123456', 0),
+(4, 'test', 'Test', 'Member', 'test@gmail.com', '123456', 1);
 
 --
 -- Indexes for dumped tables
@@ -185,7 +203,8 @@ ALTER TABLE `menus`
 --
 ALTER TABLE `restaurants`
   ADD PRIMARY KEY (`res_id`),
-  ADD KEY `ft_id` (`ft_id`);
+  ADD KEY `ft_id` (`ft_id`),
+  ADD KEY `user_id` (`user_id`);
 
 --
 -- Indexes for table `users`
@@ -201,13 +220,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `comments`
 --
 ALTER TABLE `comments`
-  MODIFY `cm_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'รหัสคอมเม้น', AUTO_INCREMENT=23;
+  MODIFY `cm_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'รหัสคอมเม้น', AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT for table `favourites`
 --
 ALTER TABLE `favourites`
-  MODIFY `fav_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'รหัสรายการโปรด', AUTO_INCREMENT=12;
+  MODIFY `fav_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'รหัสรายการโปรด', AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `food_types`
@@ -219,19 +238,19 @@ ALTER TABLE `food_types`
 -- AUTO_INCREMENT for table `menus`
 --
 ALTER TABLE `menus`
-  MODIFY `mn_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'รหัสเมนู', AUTO_INCREMENT=21;
+  MODIFY `mn_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'รหัสเมนู', AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT for table `restaurants`
 --
 ALTER TABLE `restaurants`
-  MODIFY `res_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'รหัสร้านอาหาร', AUTO_INCREMENT=12;
+  MODIFY `res_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'รหัสร้านอาหาร', AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'รหัสผู้ใช้งาน', AUTO_INCREMENT=4;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'รหัสผู้ใช้งาน', AUTO_INCREMENT=5;
 
 --
 -- Constraints for dumped tables
@@ -261,7 +280,8 @@ ALTER TABLE `menus`
 -- Constraints for table `restaurants`
 --
 ALTER TABLE `restaurants`
-  ADD CONSTRAINT `restaurants_ibfk_1` FOREIGN KEY (`ft_id`) REFERENCES `food_types` (`ft_id`);
+  ADD CONSTRAINT `restaurants_ibfk_1` FOREIGN KEY (`ft_id`) REFERENCES `food_types` (`ft_id`),
+  ADD CONSTRAINT `restaurants_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
